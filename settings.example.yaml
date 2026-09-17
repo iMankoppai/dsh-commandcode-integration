@@ -1,0 +1,24 @@
+# Example DSH settings snippets for the Command Code integration.
+# Merge these into $DSH_HOME/settings.yaml (default: ~/.dsh/settings.yaml).
+# Never put an API key in here: keys live in the credential store /
+# ~/.commandcode/auth.json, and settings only carry *references* to them.
+
+# ---- 1) make Command Code the default route for new sessions -------------
+agent-default-model:
+  provider: commandcode            # the provider route the plugin registers
+  model: deepseek/deepseek-v4.1-flash
+  reasoningEffort: high            # off | high | max for deepseek/deepseek-v4*
+  # note: the web model picker's "set as default" writes only provider+model,
+  # so it may drop reasoningEffort again - re-add it if it disappears.
+
+# ---- 2) the plugin's own settings ---------------------------------------
+# The namespace is the plugin row id from the bundle patch: `llm-commandcode`.
+llm-commandcode:
+  showSidebarQuota: true           # bottom-left quota card (OFF by default)
+  webSearch: true                  # serve dsh web_search through Command Code
+  # filterModelsByPlan: true       # hide models above your subscription tier
+  # visibleModels: []              # allowlist; empty/unset = show everything
+  # accounts: []                   # extra accounts for rotation:
+  #   - label: Go #2
+  #     apiKeyEnv: COMMANDCODE_API_KEY_2
+  # apiBase: https://api.commandcode.ai

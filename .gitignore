@@ -1,0 +1,10 @@
+# never commit credentials or local deployment data
+credentials.json
+accounts.json
+config.json
+.env
+*.bak-*
+*.retired-*
+node_modules/
+.DS_Store
+Thumbs.db
