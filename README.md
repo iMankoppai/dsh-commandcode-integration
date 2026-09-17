@@ -1,5 +1,7 @@
 # dsh-commandcode — 把 Command Code 接进 DeepSeek Harness，外加一个额度技能
 
+[English](README.en.md) | **中文** · [![ci](https://github.com/iMankoppai/dsh-commandcode-integration/actions/workflows/ci.yml/badge.svg)](https://github.com/iMankoppai/dsh-commandcode-integration/actions/workflows/ci.yml)
+
 **English TL;DR** — Everything needed to run a Command Code **Go plan** inside DeepSeek Harness: the correct community plugin per harness version, the settings keys that actually work, a quota skill (`/commandcode-quota`, natural language, double-click), and the validation recipe that catches the failure mode a config-only check misses.
 
 > 非官方整合：DSH 侧模型接入用的是社区插件 [@mars-sea/dsh-commandcode-provider](https://github.com/Mars-Sea/dsh-commandcode-provider)（MIT），本仓库不包含也不复制它的代码，只提供**安装/配置/兼容性结论、额度技能与验证方法**。需要你自己的 Command Code 订阅，适用 Command Code 服务条款。

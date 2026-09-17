@@ -1,0 +1,51 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    name: static checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: JavaScript syntax (node --check)
+        run: |
+          find . -type f \( -name '*.mjs' -o -name '*.js' \) -not -path './node_modules/*' -print0 \
+            | xargs -0 -r -n1 sh -c 'node --check "$0" && echo "ok  $0"'
+
+      - name: Repo static checks (.cmd / .vbs / .json / .yaml)
+        run: node scripts/check-static.mjs
+
+      - name: DSH skill frontmatter (name + description are required)
+        run: |
+          node -e '
+            const fs = require("fs");
+            const file = "skills/commandcode-quota/SKILL.md";
+            const text = fs.readFileSync(file, "utf8");
+            const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(text);
+            if (!m) throw new Error(file + ": missing YAML frontmatter");
+            for (const key of ["name", "description"]) {
+              if (!new RegExp("^" + key + ":", "m").test(m[1])) throw new Error(file + ": frontmatter is missing `" + key + "`");
+            }
+            console.log(file + ": frontmatter ok");
+          '
+
+      - name: quota.mjs runs and reports usage (no credentials expected)
+        run: |
+          node skills/commandcode-quota/quota.mjs --json > /tmp/quota.json || true
+          node -e '
+            const j = JSON.parse(require("fs").readFileSync("/tmp/quota.json", "utf8"));
+            if (j.ok === false) { console.log("no credentials in CI - script reported: " + j.error); process.exit(0); }
+            console.log("quota script answered for " + j.results.length + " account(s)");
+          '
